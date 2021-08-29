@@ -13,6 +13,7 @@ const searchsListContainer = document.querySelector('#wrapper__content-searchs-l
 const contentSearchContainer = document.querySelector('#wrapper__content-search');
 
 const BASE_URL = 'http://api.openweathermap.org/data/2.5';
+const API_KEY = '1646c50a7288ea8d88ab65c09bfb155a';
 
 /**
  * Update view with values from the weather API.
@@ -166,7 +167,7 @@ const postWeatherData = (data) => {
 const getWeatherByZip = async () => {
     const value = inputZip.value
     if(value) {
-        const url = `${BASE_URL}/weather?zip=${value}&appid=${"1646c50a7288ea8d88ab65c09bfb155a"}`;
+        const url = `${BASE_URL}/weather?zip=${value}&appid=${API_KEY}`;
         const response = await fetch(url, {
             method: 'GET'
         })
