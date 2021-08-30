@@ -29,14 +29,19 @@
 	transition-duration: .5s;
 }
 
-.wrapper__content-zip {
+.wrapper__content-zip, .wrapper__content-feelings {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 20px;
 }
 
-.zip-text {
+.feelings-textarea {
+    border: 2px solid #3a5d5f;
+    border-radius: 4px;
+}
+
+.zip-text, .feelings-text {
     margin-bottom: 10px;
 }
 .zip-input {
@@ -118,12 +123,23 @@
     margin: 20px;
 }
 
-.wrapper__content-place {
+.wrapper__content-place, .wrapper__content-date {
     display: flex;
     justify-content: center;
 }
 
-.zip-content-container {
+.wrapper__content-feelings-holder {
+    border-bottom: 1px solid white;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.wrapper__content-date {
+    margin-bottom: 10px;
+}
+
+.zip-content-container, .feelings-content-container {
     display: flex;
 }
 
@@ -204,4 +220,9 @@
 
 .search-list-item {
     border-bottom: 1px solid white;
+}
+
+.feelings-content {
+    padding: 10px;
+    text-align: center;
 }

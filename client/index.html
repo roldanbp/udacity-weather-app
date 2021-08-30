@@ -15,17 +15,27 @@
                 <div class="wrapper__content-zip">
                     <h3 class="zip-text">Zip Code</h3>
                     <div class="zip-content-container">
-                        <input placeholder="Enter zip code here" type="text" id="zip" class="zip-input">
-                        <button id="generate" class="zip-button">Search</button>
+                        <input placeholder="Enter zip code here" type="text" id="zip" class="zip-input" required>
+                        <button type="submit" id="generate" class="zip-button">Search</button>
                     </div>
                 </div>
-                <div id="wrapper-content-info" class="wrapper-content-info">
-                    <div class="wrapper__content-place">
-                        <h1 id="place-name" class="place-name">New York</h1>
+                <div class="wrapper__content-feelings">
+                    <h3 class="feelings-text">Feelings</h3>
+                    <div class="feelings-content-container">
+                        <textarea class="feelings-textarea" id="feelings" cols="30" rows="6" required></textarea>
                     </div>
-                    <div class="wrapper__content-temp">
+                </div>
+                <div id="entryHolder" class="wrapper-content-info">
+                    <div id="place-name" class="wrapper__content-place">
+                    </div>
+                    <div id="temp" class="wrapper__content-temp">
                         <img src="./assets/temp.png" alt="Weather icon" class="temp-img">
                         <h2 id="temp-text" class="temp-text">22</h2>
+                    </div>
+                    <div id="date" class="wrapper__content-date">
+                        <h1 id="date-name" class="place-name">13 agust</h1>
+                    </div>
+                    <div id="content" class="wrapper__content-feelings-holder">
                     </div>
                     <div class="wrapper__content-description">
                         <p id="description-text" class="description-text">Clear Sky</p>

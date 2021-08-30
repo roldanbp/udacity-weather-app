@@ -7,10 +7,13 @@ const descriptionTextElement = document.querySelector('#description-text');
 const windSpeedTextElement = document.querySelector('#description-text-wind-speed');
 const winDegTextElement = document.querySelector('#description-text-wind-deg');
 const cloudTextElement = document.querySelector('#description-text-cloud');
-const wrapperContentInfo = document.querySelector('#wrapper-content-info');
+const wrapperContentInfo = document.querySelector('#entryHolder');
 const wrapperPlaceHolder = document.querySelector('#wrapper-content-placeholder');
 const searchsListContainer = document.querySelector('#wrapper__content-searchs-list');
 const contentSearchContainer = document.querySelector('#wrapper__content-search');
+const feelingsTextArea = document.querySelector('#feelings');
+const dateTextElement = document.querySelector('#date');
+const contentTextElement = document.querySelector('#content');
 
 const BASE_URL = 'http://api.openweathermap.org/data/2.5';
 const API_KEY = '1646c50a7288ea8d88ab65c09bfb155a';
@@ -22,13 +25,15 @@ const API_KEY = '1646c50a7288ea8d88ab65c09bfb155a';
 const updateSearchUI = data => {
     wrapperContentInfo.style.display = "flex";
     wrapperContentInfo.style.flexDirection = "column";
-    placeNameElement.textContent = data.name;
-    tempTextElement.textContent = data.main.temp;
-    windSpeedTextElement.textContent = `Speed ${data.wind.speed}`;
-    winDegTextElement.textContent = `Def ${data.wind.deg}`;
-    cloudTextElement.textContent = `clouds ${data.clouds.all}`;
+    placeNameElement.innerHTML = `<h1 class="place-name">${data.name}</h1>`;
+    tempTextElement.innerHTML = data.main.temp;
+    windSpeedTextElement.innerHTML = `Speed ${data.wind.speed}`;
+    winDegTextElement.innerHTML = `Def ${data.wind.deg}`;
+    cloudTextElement.innerHTML = `clouds ${data.clouds.all}`;
+    contentTextElement.innerHTML = `<h1 class="feelings-content">${data.feelings}</h1>`;
+    dateTextElement.innerHTML = data.time;
 
-    descriptionTextElement.textContent = data.weather && data.weather[0].description;
+    descriptionTextElement.innerHTML = data.weather && data.weather[0].description;
 
 }
 
@@ -64,10 +69,45 @@ const updateSearchsListUI = data => {
 }
 
 /**
+ * Save in local server new data.
+ * @param {Object} data
+ */
+const postData = async ( url = '', data = {})=> {
+    if(wrapperPlaceHolder) {
+        wrapperPlaceHolder.classList.add('hide');
+    }
+    spinner.classList.add('show-loading');
+    spinner.classList.remove('hide-loading');
+
+      const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    try {
+        const parsedResponse = await response.json();
+        if(parsedResponse.cod === 200) {
+            return buildUI(parsedResponse);
+        }
+        return buildErrorView(parsedResponse.message);
+    } catch(error) {
+        console.log('error', error)
+        spinner.classList.add('hide-loading');
+        wrapperPlaceHolder && wrapperPlaceHolder.classList.add('hide');
+        wrapperContentInfo && wrapperContentInfo.classList.add('hide');
+    }
+}
+
+/**
  * Dynamic fetch method based on url, method.
  * @param {Object} object
  */
 const executeRequest = ({url, method, body}) => {
+
     return fetch(url,{
         method,
         credentials: 'same-origin',
@@ -132,54 +172,29 @@ const buildErrorView = (message) => {
 }
 
 /**
- * Save in local server new data.
- * @param {Object} data
- */
-const postWeatherData = (data) => {
-
-    if(wrapperPlaceHolder) {
-        wrapperPlaceHolder.classList.add('hide');
-    }
-    spinner.classList.add('show-loading')
-    spinner.classList.remove('hide-loading')
-
-    executeRequest({url: '/search-by-zip', method: 'POST', body: JSON.stringify(data)})
-    .then((response) => {
-        return response.json();
-    })
-    .then((response) => {
-        if(response.cod === 200) {
-            return buildUI(response);
-        }
-        return buildErrorView(response.message);
-    })
-    .catch((error) => {
-        console.log("Error", error);
-        spinner.classList.add('hide-loading');
-        wrapperPlaceHolder && wrapperPlaceHolder.classList.add('hide');
-        wrapperContentInfo && wrapperContentInfo.classList.add('hide');
-    })
-}
-
-/**
  * Retrieve data from weather API
  */
-const getWeatherByZip = async () => {
-    const value = inputZip.value
+const getWeatherByZip = async (baseUrl, key) => {
+    const value = inputZip.value;
+    const feelings = feelingsTextArea.value;
     if(value) {
-        const url = `${BASE_URL}/weather?zip=${value}&appid=${API_KEY}`;
+        const url = `${baseUrl}/weather?zip=${value}&appid=${key}&units=metric`;
         const response = await fetch(url, {
             method: 'GET'
         })
         try {
             const respondeParsed = await response.json();
-            postWeatherData(respondeParsed)
-        } catch(e) {
-            console.log(e)
+            const params = {
+                feelings,
+                ...respondeParsed,
+            }
+            postData('/search-by-zip', params);
+        } catch(error) {
+            console.log(error)
         }
 
     }
 }
 
 
-buttonZip.addEventListener('click', getWeatherByZip)
+buttonZip.addEventListener('click', () => getWeatherByZip(BASE_URL, API_KEY))
